@@ -1,26 +1,32 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { TransactionType } from 'src/transactiontype/transactiontype.entity'; // Asegúrate de importar correctamente la entidad TransactionType
 
 @Entity('category') // Nombre de la tabla
 export class Category {
   @PrimaryGeneratedColumn({ name: 'id_category' })
   id: number;
 
-  @Column({ 
-    name: 'name_category', 
-    type: 'varchar', 
-    length: 191, 
-    collation: 'utf8mb4_unicode_ci', 
-    nullable: false 
+  @Column({
+    name: 'name_category',
+    type: 'varchar',
+    length: 191,
+    collation: 'utf8mb4_unicode_ci',
+    nullable: false,
   })
   name: string;
 
-  @Column({ 
-    name: 'description_category', 
-    type: 'varchar', 
-    length: 191, 
-    collation: 'utf8mb4_unicode_ci', 
-    nullable: true, 
-    default: null 
+  @Column({
+    name: 'description_category',
+    type: 'varchar',
+    length: 191,
+    collation: 'utf8mb4_unicode_ci',
+    nullable: true,
+    default: null,
   })
   description: string | null;
+
+  // Relación con la entidad TransactionType
+  @ManyToOne(() => TransactionType, { eager: true })
+  @JoinColumn({ name: 'id_type_transaction' })
+  typeTransaction: TransactionType;
 }

@@ -1,15 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
-
-
+import { TransactionType } from 'src/transactiontype/transactiontype.entity';
 @Injectable()
 export class CategoryService {
   constructor(
-    @InjectRepository(Category) 
+    @InjectRepository(Category)
     private categoryRepository: Repository<Category>,
+
+    @InjectRepository(TransactionType) // Inyectar el repositorio de TransactionType
+    private transactionTypeRepository: Repository<TransactionType>,
   ) {}
 
   /**
@@ -17,7 +19,21 @@ export class CategoryService {
    * @param category Datos de la categoría
    */
   async createCategory(category: CreateCategoryDto): Promise<Category> {
-    const newCategory = this.categoryRepository.create(category);
+    // Buscar el tipo de transacción por el id (usando "id" en lugar de "id_transaction_type")
+    const typeTransaction = await this.transactionTypeRepository.findOne({
+      where: { id: category.id_type_transaction }, // Cambié de "id_transaction_type" a "id"
+    });
+
+    if (!typeTransaction) {
+      throw new NotFoundException('Tipo de transacción no encontrado');
+    }
+
+    // Crear la nueva categoría y asociar el tipo de transacción
+    const newCategory = this.categoryRepository.create({
+      ...category,
+      typeTransaction, // Asocia el tipo de transacción encontrado
+    });
+
     return this.categoryRepository.save(newCategory);
   }
 
@@ -25,7 +41,9 @@ export class CategoryService {
    * Obtener todas las categorías
    */
   async getCategories(): Promise<Category[]> {
-    return this.categoryRepository.find();
+    return this.categoryRepository.find({
+      relations: ['typeTransaction'], // Incluye la relación con el tipo de transacción
+    });
   }
 
   /**
@@ -33,7 +51,16 @@ export class CategoryService {
    * @param id Identificador de la categoría
    */
   async getCategory(id: number): Promise<Category> {
-    return this.categoryRepository.findOne({ where: { id } });
+    const category = await this.categoryRepository.findOne({
+      where: { id },
+      relations: ['typeTransaction'], // Incluye la relación con el tipo de transacción
+    });
+
+    if (!category) {
+      throw new NotFoundException('Categoría no encontrada');
+    }
+
+    return category;
   }
 
   /**
@@ -42,7 +69,24 @@ export class CategoryService {
    * @param category Datos actualizados de la categoría
    */
   async updateCategory(id: number, category: CreateCategoryDto): Promise<void> {
-    await this.categoryRepository.update({ id }, category);
+    const existingCategory = await this.categoryRepository.findOne({ where: { id } });
+
+    if (!existingCategory) {
+      throw new NotFoundException('Categoría no encontrada');
+    }
+
+    const typeTransaction = await this.transactionTypeRepository.findOne({
+      where: { id: category.id_type_transaction }, // Cambié de "id_transaction_type" a "id"
+    });
+
+    if (!typeTransaction) {
+      throw new NotFoundException('Tipo de transacción no encontrado');
+    }
+
+    await this.categoryRepository.update(id, {
+      ...category,
+      typeTransaction, // Asocia el tipo de transacción actualizado
+    });
   }
 
   /**
@@ -50,6 +94,12 @@ export class CategoryService {
    * @param id Identificador de la categoría
    */
   async deleteCategory(id: number): Promise<void> {
-    await this.categoryRepository.delete({ id });
+    const category = await this.categoryRepository.findOne({ where: { id } });
+
+    if (!category) {
+      throw new NotFoundException('Categoría no encontrada');
+    }
+
+    await this.categoryRepository.delete(id);
   }
 }

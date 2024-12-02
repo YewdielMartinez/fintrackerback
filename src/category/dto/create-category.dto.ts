@@ -1,4 +1,4 @@
-import { IsString, IsOptional } from 'class-validator';
+import { IsString, IsOptional, IsNumber, IsNotEmpty } from 'class-validator';
 
 export class CreateCategoryDto {
   @IsString()
@@ -7,4 +7,8 @@ export class CreateCategoryDto {
   @IsOptional()
   @IsString()
   description?: string;
+
+  @IsNumber()
+  @IsNotEmpty()
+  id_type_transaction: number; // Campo para la relación con el tipo de transacción
 }
