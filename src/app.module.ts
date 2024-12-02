@@ -1,7 +1,7 @@
 import { TransactionModule } from './transaction/transaction.module';
 import { TransactionController } from './transaction/transaction.controller';
 import { TransactiontypeModule } from './transactiontype/transactiontype.module';
-import { TransactiontypeController } from './transactiontype/transactiontype.controller';
+import { TransactionTypeController } from './transactiontype/transactiontype.controller';
 import { ServiceService } from './saving/service.service';
 import { SavingModule } from './saving/saving.module';
 import { SavingController } from './saving/saving.controller';
@@ -25,6 +25,7 @@ import { UserModule } from './user/user.module';
 import { AccountService } from './account/account.service';
 import { UserService } from './user/user.service';
 import { TypeaccountService } from './typeAccount/typeaccount.service';
+import { TransactionTypeService } from './transactiontype/transactiontype.service';
 
 @Module({
   imports: [
@@ -50,7 +51,7 @@ import { TypeaccountService } from './typeAccount/typeaccount.service';
   ],
   controllers: [
     TransactionController,
-    TransactiontypeController,
+    TransactionTypeController,
     SavingController,
     CategoryController,
     AlerttypeController,
@@ -59,6 +60,6 @@ import { TypeaccountService } from './typeAccount/typeaccount.service';
     AccountController,
     AppController,
   ],
-  providers: [ServiceService, CategoryService, AlertService, AppService, AccountService,UserService,TypeaccountService],
+  providers: [ServiceService, CategoryService, AlertService, AppService, AccountService,UserService,TypeaccountService,TransactionTypeService],
 })
 export class AppModule {}
