@@ -26,6 +26,7 @@ import { AccountService } from './account/account.service';
 import { UserService } from './user/user.service';
 import { TypeaccountService } from './typeAccount/typeaccount.service';
 import { TransactionTypeService } from './transactiontype/transactiontype.service';
+import { TransactionService } from './transaction/transaction.service';
 
 @Module({
   imports: [
@@ -60,6 +61,6 @@ import { TransactionTypeService } from './transactiontype/transactiontype.servic
     AccountController,
     AppController,
   ],
-  providers: [ServiceService, CategoryService, AlertService, AppService, AccountService,UserService,TypeaccountService,TransactionTypeService],
+  providers: [ServiceService, CategoryService, AlertService, AppService, AccountService,UserService,TypeaccountService,TransactionTypeService,TransactionService],
 })
 export class AppModule {}

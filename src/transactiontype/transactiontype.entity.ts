@@ -1,8 +1,10 @@
+import { Transaction } from 'src/transaction/transaction.entity';
 import {
     Entity,
     PrimaryGeneratedColumn,
     Column,
     Unique,
+    OneToMany
   } from 'typeorm';
   
   @Entity('transactiontype') // Nombre de la tabla
@@ -21,5 +23,7 @@ import {
       nullable: true,
     })
     description: string | null;
+    @OneToMany(() => Transaction, (transaction) => transaction.transactionType)
+    transactions: Transaction[];
   }
   

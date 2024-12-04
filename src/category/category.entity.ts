@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn,OneToMany } from 'typeorm';
 import { TransactionType } from 'src/transactiontype/transactiontype.entity'; // Asegúrate de importar correctamente la entidad TransactionType
+import { Transaction } from 'src/transaction/transaction.entity';
 
 @Entity('category') // Nombre de la tabla
 export class Category {
@@ -29,4 +30,7 @@ export class Category {
   @ManyToOne(() => TransactionType, { eager: true })
   @JoinColumn({ name: 'id_type_transaction' })
   typeTransaction: TransactionType;
+  
+  @OneToMany(() => Transaction, (transaction) => transaction.category)
+  transactions: Transaction[];
 }

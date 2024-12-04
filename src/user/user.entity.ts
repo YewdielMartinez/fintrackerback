@@ -7,6 +7,7 @@ import {
   OneToMany,
 } from 'typeorm';
 import { Account } from 'src/account/account.entity';
+import { Transaction } from 'src/transaction/transaction.entity';
 @Entity('user') // Nombre de la tabla
 @Unique('User_email_users_key', ['email']) // Llave única
 export class User {
@@ -38,4 +39,7 @@ export class User {
 
   @OneToMany(() => Account, (account) => account.user)
   accounts: Account[];
+
+  @OneToMany(() => Transaction, (transaction) => transaction.user)
+  transactions: Transaction[];
 }

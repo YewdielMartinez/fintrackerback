@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   ManyToOne,
   JoinColumn,
+  OneToMany
 } from 'typeorm';
 import { User } from 'src/user/user.entity';// Asegúrate de ajustar la ruta según tu estructura de proyecto
 import { TypeAccount } from 'src/typeAccount/typeaccount.entity';
+import { Transaction } from 'src/transaction/transaction.entity';
 @Entity('account') // Nombre de la tabla
 export class Account {
   @PrimaryGeneratedColumn({ name: 'id_account' })
@@ -41,4 +43,6 @@ export class Account {
     @ManyToOne(() => TypeAccount, { eager: true }) // Eager para cargar automáticamente el tipo de cuenta
     @JoinColumn({ name: 'id_type_account' })
     typeAccount: TypeAccount;
+  @OneToMany(() => Transaction, (transaction) => transaction.account)
+  transactions: Transaction[];
 }
